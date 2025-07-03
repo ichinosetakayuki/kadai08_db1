@@ -188,7 +188,7 @@ function renderSchedules(dataArray) {
   $(".memo_box").empty(); //一旦、既存予定を消去
   $(".multi_day_box").empty(); //一旦、既存予定を消去
 
-  if(!Array.isArray(dataArray)) {
+  if (!Array.isArray(dataArray)) {
     console.error("renderSchedules:データが配列ではありません", dataArray);
     return;
   }
@@ -433,4 +433,49 @@ $("#toThisMonth").on("click", function () {
   renderSchedules(allScheduleData);
 });
 
+// 予定検索画面
 
+// 予定検索画面オープン
+$("#searchOpen").on("click", function () {
+  $(".search_overlay").slideDown(300);
+  $("#searchResult").empty();
+  $("#searchInput").val("");
+});
+
+// 予定検索画面を閉じる
+$("#searchCancel").on("click", function () {
+  $(".search_overlay").slideUp(300);
+});
+
+// 検索ボタンをクリックしてキーワードをsearch.phpにおくる。戻ってきた
+$("#searchBtn").on("click", function () {
+  const keyword = $("#searchInput").val();
+
+  if (!keyword) {
+    alert("キーワードを入力してください。")
+  }
+
+  $.post("search.php", { keyword: keyword }, function (results) {
+    // resultsはすでにオブジェクトになっている。
+    // console.log("受信データ:", results);
+    // console.log("typeof:", typeof results);
+    // const results = JSON.parse(data);
+    let html = "";
+
+    if (results.length === 0) {
+      html = `<p>該当する予定はありません。</p>`;
+    } else {
+      results.forEach(item => {
+        html += `<div class="result_item">${item.start_date}：${item.title}</div>`
+      });
+    }
+    $("#searchResult").html(html);
+  }).fail(function (xhr, status, error) {
+    console.error("検索に失敗しました");
+    console.error("xhr.status", xhr.status);
+    console.error("status", status);
+    console.error("error", error);
+
+    $("#searchResult").html(`<p>検索中にエラーが発生しました。${xhr.status}</p>`);
+  })
+});
