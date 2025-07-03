@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -42,6 +40,7 @@
 
       <!-- セッティングボタン -->
       <div class="setting">
+        <button id="searchOpen">予定検索</button>
         <button id="selectWallPaper">壁紙選択</button>
         <button id="toThisMonth">今月に戻る</button>
       </div>
@@ -128,6 +127,20 @@
         </div>
       </div>
     </div>
+    <!-- 予定検索画面 -->
+    <div class="search_overlay">
+      <div class="search_box">
+        <div class="search_box_top">
+          <input type="text" id="searchInput"  name="keyword" placeholder="タイトル、場所などキーワード">
+          <button id="searchBtn">検　索</button>
+        </div>
+        <div id="searchResult"></div>
+        <div class="search_btn_box">
+          <button id="searchCancel">閉じる</button>
+        </div>
+      </div>
+    </div>
+
 
     <!-- 壁紙選択モーダル画面 -->
     <div class="wallPaper_overlay">
