@@ -22,7 +22,7 @@ if ($repeat_type !== 'norepeat' && empty($repeat_end)) {
   exit('繰り返しの終了日が必要です');
 }
 
-// 繰り返し予定の場合、ユニークなidを付加する
+// 繰り返し予定の場合、ユニークなidを付加する。generateUUID→ユニークなIDを生成する関数。
 $repeat_group_id = ($repeat_type !== 'norepeat') ? generateUUID() :null;
 
 $max_repeat = 100; //無限ループ防止
