@@ -6,7 +6,7 @@ window.addEventListener("DOMContentLoaded", () => {
   axios.get("read.php")
     .then(function (response) {
       allScheduleData = response.data;
-      // console.log("axiosで取得したデータ：", allScheduleData);
+      console.log("axiosで取得したデータ：", allScheduleData);
       renderSchedules(allScheduleData);
     })
     .catch(function (error) {
@@ -315,7 +315,7 @@ $("#newEntry").on("click", function () {
   $("#modalTitle").text(sheduleDate);
   $(".event_overlay").css('display', 'none');
   $(".overlay").css('display', 'block');
-
+  $(".modal_item_update").hide(); // 繰り返し予定編集の確認
   $("#save").hide().show();//保存ボタン表示
   $("#upDate").hide();
   $("#delete").hide();
@@ -351,6 +351,7 @@ $("#eventList").on("click", ".eventList_item", function () {
     // $("#dateBoxId").text(item.date);
     // console.log(item.date);
     $("#editingId").val(item.id);
+    $("#groupId").val(item.repeat_group_id);
     $(".event_overlay").css('display', 'none');
     $(".overlay").css('display', 'block');
 
@@ -358,6 +359,13 @@ $("#eventList").on("click", ".eventList_item", function () {
     $("#upDate").hide().show();
     $("#delete").hide().show();
     //更新ボタン、削除ボタンは表示
+    if (item.repeat_type !== "norepeat") {
+      $(".modal_item_update").show();
+      $("#startDate").prop("disabled", true);
+      $("#endDate").prop("disabled", true);
+    } else {
+      $(".modal_item_update").hide();
+    }
 
   } else {
     alert('該当データがありません')
@@ -478,4 +486,47 @@ $("#searchBtn").on("click", function () {
 
     $("#searchResult").html(`<p>検索中にエラーが発生しました。${xhr.status}</p>`);
   })
+});
+
+$("#upDate").on("click", function () {
+
+  console.log($("input[name='update_scope']:checked").val());
+
+  const updateData = {
+    id: $("#editingId").val(),
+    title: $("#title").val(),
+    start_date: $("#startDate").val(),
+    start_time: $("#startTime").val(),
+    end_date: $("#endDate").val(),
+    end_time: $("#endTime").val(),
+    place: $("#place").val(),
+    note: $("#note").val(),
+    repeat_type: $("#repeat").val(),
+    repeat_end: $("#repeatEnd").val(),
+    repeat_group_id: $("#groupId").val(),
+    update_scope: $("input[name='update_scope']:checked").val()
+  }
+
+  console.log(updateData);
+
+  $.post("update.php", updateData, function (results) {
+    if (results.status === "success") {
+      alert("更新が完了しました")
+      // console.log(allScheduleData);
+      $.getJSON("read.php", function (data) {
+        allScheduleData = data;
+        // console.log(allScheduleData);
+        renderSchedules(allScheduleData);
+        $(".overlay").hide();
+      });
+    } else {
+      console.error("更新失敗:", results);
+    }
+  }).fail(function (xhr, status, error) {
+    console.error("検索に失敗しました");
+    console.error("xhr.status", xhr.status);
+    console.error("status", status);
+    console.error("error", error);
+  })
+
 });

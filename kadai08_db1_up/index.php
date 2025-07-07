@@ -96,7 +96,18 @@
               <input type="date" id="repeatEnd" name="repeat_end" class="border_style">
             </div>
           </div>
+          <div class="modal_item_update">
+            <div class="modal_item_update_scope">
+              <p>どの予定を更新しますか？</p>
+              <div class="modal_item_update_scope_inner">
+                <div><input type="radio" name="update_scope" value="single" checked>この日のみ</div>
+                <div><input type="radio" name="update_scope" value="following">この日以降すべて</div>
+              </div>
+            </div>
+
+          </div>
           <input type="hidden" id="editingId">
+          <input type="hidden" id="groupId">
           <div class="modal_item_buttons">
             <button id="save" type="submit">保　存</button>
             <button id="upDate" type="button">更　新</button>
@@ -131,7 +142,7 @@
     <div class="search_overlay">
       <div class="search_box">
         <div class="search_box_top">
-          <input type="text" id="searchInput"  name="keyword" placeholder="タイトル、場所などキーワード">
+          <input type="text" id="searchInput" name="keyword" placeholder="タイトル、場所などキーワード">
           <button id="searchBtn">検　索</button>
         </div>
         <div id="searchResult"></div>
