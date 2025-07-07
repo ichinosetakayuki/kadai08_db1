@@ -18,7 +18,7 @@ $repeat_end = nullIfEmpty($_POST['repeat_end'] ?? null);
 $repeat_group_id = $_POST['repeat_group_id'] ?? null;
 $update_scope = $_POST['update_scope'] ?? null;
 
-$target_date = $start_date;
+$target_date = $start_date; // 基準日を選択した日に設定
 
 require_once('connect.php');
 $pdo = db_conn();

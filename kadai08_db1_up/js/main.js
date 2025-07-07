@@ -359,10 +359,14 @@ $("#eventList").on("click", ".eventList_item", function () {
     $("#upDate").hide().show();
     $("#delete").hide().show();
     //更新ボタン、削除ボタンは表示
+
     if (item.repeat_type !== "norepeat") {
+      // 繰り返し予定の場合、
       $(".modal_item_update").show();
+      // その日だけかその日以降全てか選択するラジオボタンを表示
       $("#startDate").prop("disabled", true);
       $("#endDate").prop("disabled", true);
+      // 開始日と終了日は変更不可とする
     } else {
       $(".modal_item_update").hide();
     }
@@ -488,6 +492,7 @@ $("#searchBtn").on("click", function () {
   })
 });
 
+// 既存予定を編集し、更新ボタンで更新
 $("#upDate").on("click", function () {
 
   console.log($("input[name='update_scope']:checked").val());
@@ -521,6 +526,37 @@ $("#upDate").on("click", function () {
       });
     } else {
       console.error("更新失敗:", results);
+    }
+  }).fail(function (xhr, status, error) {
+    console.error("検索に失敗しました");
+    console.error("xhr.status", xhr.status);
+    console.error("status", status);
+    console.error("error", error);
+  })
+
+});
+
+// 既存予定の削除
+$("#delete").on("click", function () {
+
+  const deleteData = {
+    id: $("#editingId").val(),
+    start_date: $("#startDate").val(),
+    repeat_type: $("#repeat").val(),
+    repeat_group_id: $("#groupId").val(),
+    update_scope: $("input[name='update_scope']:checked").val()
+  }
+
+  $.post("delete.php", deleteData, function (results) {
+    if (results.status === "success") {
+      alert("データが削除されました。");
+      $.getJSON("read.php", function (data) {
+        allScheduleData = data;
+        renderSchedules(allScheduleData);
+        $(".overlay").hide();
+      });
+    } else {
+      console.error("削除失敗:", results);
     }
   }).fail(function (xhr, status, error) {
     console.error("検索に失敗しました");

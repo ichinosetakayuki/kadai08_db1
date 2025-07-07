@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 require_once('connect.php');
 $pdo = db_conn();
 
-$sql =  'SELECT * FROM schedule_table ORDER BY start_date ASC, start_time ASC';
+$sql =  'SELECT * FROM schedule_table WHERE deleted_at IS NULL ORDER BY start_date ASC, start_time ASC';
 $stmt = $pdo->prepare($sql);
 
 try {
