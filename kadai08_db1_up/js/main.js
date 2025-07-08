@@ -302,8 +302,10 @@ $("#newEntry").on("click", function () {
 
   $("#title").val("");
   $("#startDate").val(formattedDate);
+  $("#startDate").prop("disabled", false);
   $("#startTime").val("");
   $("#endDate").val(formattedDate);
+  $("#endDate").prop("disabled", false);
   $("#endTime").val("");
   $("#place").val("");
   $("#note").val("");
@@ -337,8 +339,10 @@ $("#eventList").on("click", ".eventList_item", function () {
 
     $("#title").val(item.title);
     $("#startDate").val(item.start_date);
+    $("#startDate").prop("disabled", false);
     $("#startTime").val(item.start_time);
     $("#endDate").val(item.end_date);
+    $("#endDate").prop("disabled", false);
     $("#endTime").val(item.end_time);
     $("#place").val(item.place);
     $("#note").val(item.note);
@@ -348,8 +352,7 @@ $("#eventList").on("click", ".eventList_item", function () {
     $("#repeatEnd").prop("disabled", true);
     const sheduleDate = $("#eventDay").text();
     $("#modalTitle").text(sheduleDate);
-    // $("#dateBoxId").text(item.date);
-    // console.log(item.date);
+
     $("#editingId").val(item.id);
     $("#groupId").val(item.repeat_group_id);
     $(".event_overlay").css('display', 'none');
@@ -384,6 +387,9 @@ $("#modalCancel").on("click", function () {
 
   if (previousOverlay === 'eventList') {
     $(".event_overlay").css('display', 'block');
+  }
+  if (previousOverlay === 'searchResult') {
+    $(".search_overlay").show();
   }
   previousOverlay === null;
 });
@@ -459,40 +465,97 @@ $("#searchCancel").on("click", function () {
   $(".search_overlay").slideUp(300);
 });
 
-// 検索ボタンをクリックしてキーワードをsearch.phpにおくる。戻ってきた
+// 検索ボタンをクリックしてキーワードをsearch.phpにおくる。
+// 戻ってきたデータ（results）はオブジェクトになっている。
 $("#searchBtn").on("click", function () {
   const keyword = $("#searchInput").val();
 
   if (!keyword) {
     alert("キーワードを入力してください。")
+  } else {
+    $.post("search.php", { keyword: keyword }, function (results) {
+      // resultsはすでにオブジェクトになっている。
+      let html = "";
+
+      if (results.length === 0) {
+        html = `<p>該当する予定はありません。</p>`;
+      } else {
+        results.forEach(item => {
+          html += `<div class="result_item" data-id=${item.id}>${item.start_date}：${item.title}</div>`
+        });
+      }
+      $("#searchResult").html(html);
+    }).fail(function (xhr, status, error) {
+      console.error("検索に失敗しました");
+      console.error("xhr.status", xhr.status);
+      console.error("status", status);
+      console.error("error", error);
+
+      $("#searchResult").html(`<p>検索中にエラーが発生しました。${xhr.status}</p>`);
+    })
   }
-
-  $.post("search.php", { keyword: keyword }, function (results) {
-    // resultsはすでにオブジェクトになっている。
-    // console.log("受信データ:", results);
-    // console.log("typeof:", typeof results);
-    // const results = JSON.parse(data);
-    let html = "";
-
-    if (results.length === 0) {
-      html = `<p>該当する予定はありません。</p>`;
-    } else {
-      results.forEach(item => {
-        html += `<div class="result_item">${item.start_date}：${item.title}</div>`
-      });
-    }
-    $("#searchResult").html(html);
-  }).fail(function (xhr, status, error) {
-    console.error("検索に失敗しました");
-    console.error("xhr.status", xhr.status);
-    console.error("status", status);
-    console.error("error", error);
-
-    $("#searchResult").html(`<p>検索中にエラーが発生しました。${xhr.status}</p>`);
-  })
 });
 
-// 既存予定を編集し、更新ボタンで更新
+//予定検索し、結果の予定をクリック→予定編集画面に遷移
+$("#searchResult").on("click", ".result_item", function () {
+
+  previousOverlay = 'searchResult';
+
+  const id = parseInt($(this).attr("data-id"));
+  const item = allScheduleData.find(item => item.id === id);
+  console.log(item);
+
+  if (item) {
+
+
+    const dateId = `day${item.start_date.replace(/-/g, "")}` //正規表現：全ての"-"を削除
+    const sheduleDate = `${dateId.slice(3, 7)}年${dateId.slice(7, 9)}月${dateId.slice(9, 11)}日`;
+
+    $("#title").val(item.title);
+    $("#startDate").val(item.start_date);
+    $("#startDate").prop("disabled", false);
+    $("#startTime").val(item.start_time);
+    $("#endDate").val(item.end_date);
+    $("#endDate").prop("disabled", false);
+    $("#endTime").val(item.end_time);
+    $("#place").val(item.place);
+    $("#note").val(item.note);
+    $("#repeat").val(item.repeat_type);
+    $("#repeat").prop("disabled", true);
+    $("#repeatEnd").val(item.repeat_end);
+    $("#repeatEnd").prop("disabled", true);
+
+    $("#modalTitle").text(sheduleDate); // モーダル画面のタイトル日付
+    $("#dateBoxId").html(dateId); // モーダル画面内部のID 例:"day20250726"
+    $("#editingId").val(item.id);
+    $("#groupId").val(item.repeat_group_id);
+
+    $(".search_overlay").hide(); // 予定検索画面隠す
+    $(".overlay").show(); // 予定編集画面を表示
+
+    $("#save").hide();//保存ボタン削除
+    $("#upDate").hide().show();
+    $("#delete").hide().show();
+    //更新ボタン、削除ボタンは表示
+
+    if (item.repeat_type !== "norepeat") {
+      // 繰り返し予定の場合、
+      $(".modal_item_update").show();
+      // その日だけかその日以降全てか選択するラジオボタンを表示
+      $("#startDate").prop("disabled", true);
+      $("#endDate").prop("disabled", true);
+      // 開始日と終了日は変更不可とする
+    } else {
+      $(".modal_item_update").hide();
+    }
+
+  } else {
+    alert('該当データがありません')
+  }
+
+});
+
+// 既存予定を編集し、更新ボタンで予定内容を更新
 $("#upDate").on("click", function () {
 
   console.log($("input[name='update_scope']:checked").val());
