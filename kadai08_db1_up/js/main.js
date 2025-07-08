@@ -1,3 +1,5 @@
+import { initializeWallpaperSelection } from './wallpaper.js';
+import { stripTime, changeFormatdate } from './utils.js';
 
 let allScheduleData = []; //グルーバル変数　予定データ全体
 
@@ -18,6 +20,8 @@ const today = new Date();
 let month = today.getMonth();
 let year = today.getFullYear();
 
+// 壁紙機能の初期化とイベントリスナーの設定
+initializeWallpaperSelection();
 
 // 見出しの年月と曜日
 const days = ['月', '火', '水', '木', '金', '土', '日'];
@@ -232,11 +236,6 @@ $("#save").on("click", function () {
   $(".overlay").css('display', 'none');
 });
 
-// 日付を入力し、時刻をはずず関数
-function stripTime(date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
 // 日をクリックして予定リスト画面を呼出
 $("tbody").on("click", ".date_box", function () {
 
@@ -281,14 +280,6 @@ $("#eventCancel").on("click", function () {
   $(".event_overlay").slideUp(300);
 });
 
-// "day20250620"を"2025-06-20"に変換する関数
-function changeFormatdate(dateBoxId) {
-  const yyyy = dateBoxId.slice(3, 7);
-  const mm = dateBoxId.slice(7, 9);
-  const dd = dateBoxId.slice(9, 11);
-  const formattedDate = `${yyyy}-${mm}-${dd}`;
-  return formattedDate;
-}
 
 let previousOverlay = null;
 // 現在の画面状態を記録する変数
@@ -397,49 +388,6 @@ $("#modalCancel").on("click", function () {
 // 壁紙選択関係アクション
 $("#selectWallPaper").on("click", function () {
   $(".wallPaper_overlay").css('display', 'block');
-});
-
-
-// 画像選択アクション
-let selectedWallPaper = null;//画像パス
-
-$(".wallPaper").on("click", function () {
-  $(".wallPaper").removeClass('selected');//初期化、選択状態リセット
-  $(this).addClass('selected');
-  //クリック画像を選択状態に
-
-  selectedWallPaper = $(this).find("img").attr("src");//選択画像のパスを取得
-});
-
-//選択した壁紙へ壁紙の変更、ストレージにパスを保存
-$("#wallPaperChange").on("click", function () {
-  if (selectedWallPaper) {
-    $(".cal_wrapper").css(
-      'background-image', `linear-gradient(to top, rgba(217, 175, 217, 0.5) 0%, rgba(151, 217, 225, 0.5) 100%),
-       url(${selectedWallPaper})`);//背景変更
-
-    localStorage.setItem('wallPaper', selectedWallPaper);//ストレージに保存
-
-    $(".wallPaper_overlay").css('display', 'none');
-
-  } else {
-    alert('壁紙を選択してください');
-  }
-});
-
-// ストレージに保存した壁紙の読み込み
-$(function () {
-  const savedWallPaper = localStorage.getItem('wallPaper');
-  if (savedWallPaper) {
-    $(".cal_wrapper").css(
-      'background-image', `linear-gradient(to top, rgba(217, 175, 217, 0.5) 0%, rgba(151, 217, 225, 0.5) 100%),
-       url(${savedWallPaper})`);
-  }
-});
-
-// 壁紙選択画面のキャンセル
-$("#wallPaperCancelBtn").on("click", function () {
-  $(".wallPaper_overlay").css('display', 'none');
 });
 
 // 今月に戻るボタン

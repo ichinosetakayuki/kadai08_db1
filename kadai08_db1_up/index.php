@@ -182,7 +182,7 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- js Firebase読み込み -->
   <!-- <script type="module" src="js/main.js"></script> -->
-  <script src="js/main.js?v=1234"></script>
+  <script type="module" src="js/main.js?v=1234"></script>
 
 </body>
 
