@@ -20,7 +20,7 @@
     <div class="cal_wrapper">
       <!-- 森高タイトル部分h1 -->
       <h1 class="m-plus-rounded-1c-regular"><span class="yellow_under_line">森高千里 <span
-            class="pacifico-regular calendar-cute">Calendar ver.3</span></span></h1>
+            class="pacifico-regular calendar-cute">Calendar ver.4</span></span></h1>
       <!-- カレンダー月見出し -->
       <div class="cal_container">
         <div class="month_box">
@@ -96,7 +96,18 @@
               <input type="date" id="repeatEnd" name="repeat_end" class="border_style">
             </div>
           </div>
+          <div class="modal_item_update">
+            <div class="modal_item_update_scope">
+              <p>どの予定を更新または削除しますか？</p>
+              <div class="modal_item_update_scope_inner">
+                <div><input type="radio" name="update_scope" value="single" checked>この日のみ</div>
+                <div><input type="radio" name="update_scope" value="following">この日以降すべて</div>
+              </div>
+            </div>
+
+          </div>
           <input type="hidden" id="editingId">
+          <input type="hidden" id="groupId">
           <div class="modal_item_buttons">
             <button id="save" type="submit">保　存</button>
             <button id="upDate" type="button">更　新</button>
@@ -131,7 +142,7 @@
     <div class="search_overlay">
       <div class="search_box">
         <div class="search_box_top">
-          <input type="text" id="searchInput"  name="keyword" placeholder="タイトル、場所などキーワード">
+          <input type="text" id="searchInput" name="keyword" placeholder="タイトル、場所などキーワード">
           <button id="searchBtn">検　索</button>
         </div>
         <div id="searchResult"></div>
@@ -169,9 +180,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <!-- axiosライブラリの読み込み -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <!-- js Firebase読み込み -->
-  <!-- <script type="module" src="js/main.js"></script> -->
-  <script src="js/main.js?v=1234"></script>
+  <script type="module" src="js/main.js?v=1234"></script>
 
 </body>
 

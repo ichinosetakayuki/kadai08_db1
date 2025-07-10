@@ -276,6 +276,26 @@ table td:nth-child(7) {
   font-weight: normal;
 }
 
+.modal_item_update {
+  display: none;
+}
+
+.modal_item_update_scope {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal_item_update_scope p {
+  border-left: 8px solid rgb(255, 122, 224);
+  padding-left: 8px;
+}
+
+.modal_item_update_scope_inner {
+  display: flex;
+  gap: 10px;
+}
+
 .modal_item_buttons {
   display: flex;
   justify-content: center;
@@ -437,7 +457,7 @@ table td:nth-child(7) {
 }
 
 .search_box button {
-    padding: 2px 4px;
+  padding: 2px 4px;
 }
 
 .search_btn_box {
