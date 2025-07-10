@@ -10,7 +10,7 @@ $sql =  'SELECT * FROM schedule_table WHERE deleted_at IS NULL ORDER BY start_da
 $stmt = $pdo->prepare($sql);
 
 try {
-  $atatus = $stmt->execute();
+  $status = $stmt->execute();
 } catch (PDOException $e) {
   echo json_encode(["sql error" => "{$e->getMessage()}"]);
   exit();

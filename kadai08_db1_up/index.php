@@ -180,8 +180,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <!-- axiosライブラリの読み込み -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <!-- js Firebase読み込み -->
-  <!-- <script type="module" src="js/main.js"></script> -->
   <script type="module" src="js/main.js?v=1234"></script>
 
 </body>

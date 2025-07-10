@@ -7,7 +7,7 @@ $pdo = db_conn();
 
 $keyword = $_POST['keyword'];
 
-$sql = 'SELECT * FROM schedule_table WHERE title LIKE :keyword OR place LIKE :keyword OR note LIKE :keyword ORDER BY start_date DESC';
+$sql = 'SELECT * FROM schedule_table WHERE deleted_at IS NULL AND (title LIKE :keyword OR place LIKE :keyword OR note LIKE :keyword) ORDER BY start_date DESC';
 
 $stmt = $pdo->prepare($sql);
 
@@ -22,5 +22,3 @@ try {
 
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 echo json_encode($results, JSON_UNESCAPED_UNICODE);
-
-?>
